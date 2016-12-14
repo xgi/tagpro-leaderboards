@@ -27,7 +27,7 @@ The script requires an argument containing the name of the board to retrieve:
 The script is intended to be run as a cronjob/equivalent, and run separately even if boards are resetting simultaneously. This is an example crontab for starting 5 minutes before the boards are scheduled to reset (based on UTC):
 
 ```
-55 19 * * * * /path/to/leaderboards.py day
-55 19 * * 7 * /path/to/leaderboards.py week
-55 19 1 * * * /path/to/leaderboards.py month
+55 19 * * * /path/to/leaderboards.py day
+55 19 * * 0 /path/to/leaderboards.py week
+55 19 1 * * /path/to/leaderboards.py month
 ```
