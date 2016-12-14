@@ -1,5 +1,5 @@
 TagPro Leaderboards Mini
----
+===
 
 TagPro Leaderboards Mini is a script for retrieving leaderboard statistics from the online game TagPro, and posting those stats to the TagPro subreddit. It is intended to be run as a cronjob. This project is a derivative of, and deprecates, [TagPro Leaderboards](https://github.com/xgi/tagpro-leaderboards).
 
