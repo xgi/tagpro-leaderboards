@@ -74,6 +74,10 @@ for link in profile_links:
     profiles.append(profile)
     rank += 1
 
+# re-sort profiles by points because they may have changed in the time it took
+# to download all profiles
+profiles.sort(key=lambda profile: profile.points, reverse=True)
+
 ## build reddit post
 post_text = """\#|Name|Points|Time|Win%|G|W|L|Pup%|Save%|Tags|Popped|Grabs|Caps|Hold|Prevent|Returns|Support|DCs
 -|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|"""
