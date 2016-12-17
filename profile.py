@@ -1,8 +1,7 @@
 class Profile:
-    def __init__(self, url, name, rank):
+    def __init__(self, url, name):
         self.url = url
         self.name = name
-        self.rank = rank
 
     def read_table(self, table):
         # convert table into dictionary

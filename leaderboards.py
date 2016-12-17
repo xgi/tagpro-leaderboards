@@ -50,10 +50,9 @@ profile_links = [row.find('a') for row in rows[1:]]
 
 ## retrieve individual profile information
 profiles = []
-rank = 1
 
 for link in profile_links:
-    profile = Profile(link.attrs['href'], link.text.strip(), rank)
+    profile = Profile(link.attrs['href'], link.text.strip())
 
     # request profile page and rotate the server list
     response = helpers.request(servers, profile.url)
@@ -72,32 +71,36 @@ for link in profile_links:
 
     # add profile obj to list
     profiles.append(profile)
-    rank += 1
 
 # re-sort profiles by points because they may have changed in the time it took
 # to download all profiles
-profiles.sort(key=lambda profile: profile.points, reverse=True)
+profiles.sort(
+    key=lambda profile: profile.data['Points'][board_name],
+    reverse=True
+)
 
 ## build reddit post
 post_text = """\#|Name|Points|Time|Win%|G|W|L|Pup%|Save%|Tags|Popped|Grabs|Caps|Hold|Prevent|Returns|Support|DCs
 -|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|"""
 
+rank = 1
+
 for profile in profiles:
     name = profile.name
 
     # add link to profile for top 10 players
-    if profile.rank <= 10:
+    if rank <= 10:
         name = "[%s](http://tagpro-radius.koalabeast.com%s)" % (
             profile.name,
             profile.url
         )
 
         # make name bold for top 3 players (winners)
-        if profile.rank <= 3:
+        if rank <= 3:
             name = "**%s**" % name
 
     post_text += "\n%d|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|" % (
-        profile.rank,
+        rank,
         name,
         profile.data['Points'][board_name],
         profile.data['Time Played'][board_name],
@@ -117,5 +120,7 @@ for profile in profiles:
         profile.data['Support'][board_name],
         profile.data['Disconnects'][board_name]
     )
+
+    rank += 1
 
 subreddit.submit(helpers.submission_title(board_name), post_text)
