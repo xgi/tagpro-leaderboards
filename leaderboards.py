@@ -75,7 +75,7 @@ for link in profile_links:
 # re-sort profiles by points because they may have changed in the time it took
 # to download all profiles
 profiles.sort(
-    key=lambda profile: profile.data['Points'][board_name],
+    key=lambda profile: int(profile.data['Points'][board_name]),
     reverse=True
 )
 
