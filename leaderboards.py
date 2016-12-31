@@ -52,7 +52,12 @@ profile_links = [row.find('a') for row in rows[1:]]
 profiles = []
 
 for link in profile_links:
-    profile = Profile(link.attrs['href'], link.text.strip())
+    # retrieve and sanitize profile name
+    name = link.text.strip()
+    name = name.replace('|','&#124;')
+
+    # create profile obj
+    profile = Profile(link.attrs['href'], name)
 
     # request profile page and rotate the server list
     response = helpers.request(servers, profile.url)
