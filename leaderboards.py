@@ -27,9 +27,12 @@ else:
 servers = ['origin', 'pi', 'sphere', 'radius', 'centra']
 
 # create reddit object for submitting board
-reddit = praw.Reddit(user_agent="TagPro Leaderboards Mini https://github.com/xgi/tagpro-leaderboards-mini")
-reddit.login(secret.reddit_username, secret.reddit_password)
-subreddit = reddit.get_subreddit('tagpro')
+reddit = praw.Reddit(client_id=secret.client_id,
+                     client_secret=secret.client_secret,
+                     username=secret.reddit_username,
+                     password=secret.reddit_password,
+                     user_agent="TagPro Leaderboards Mini https://github.com/xgi/tagpro-leaderboards-mini")
+subreddit = reddit.subreddit('tagpro')
 
 ## get the main boards page with links to profiles
 # request boards page and rotate the server list

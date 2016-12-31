@@ -6,11 +6,17 @@ TagPro Leaderboards Mini is a script for retrieving leaderboard statistics from 
 Configuration
 ---
 
-It is required to create a file named `secret.py` which contains variables for the submitter's Reddit username and password. For example:
+1. [Register a Reddit application.](https://github.com/reddit/reddit/wiki/OAuth2#getting-started) You should use the "script" classification.
+
+2. Identify the client_id and client_secret keys from the app's information panel.
+
+3. Create a file named `secret.py` in the same directory as `leaderboards.py` and fill it with the following variables:
 
 ```
-reddit_username = "TagProLeaderboards"
-reddit_password = "hunter2"
+client_id = "YOUR_CLIENT_ID"
+client_secret = "YOUR_CLIENT_SECRET"
+reddit_username = "YOUR_REDDIT_USERNAME"
+reddit_password = "YOUR_REDDIT_PASSWORD"
 ```
 
 You can modify the servers the bot will retrieve data from by modifying the variable `servers` in `leaderboards.py`. You should choose servers close to the location of your own, but the more the better (reduces load on the TagPro website).
