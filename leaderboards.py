@@ -4,6 +4,7 @@ import praw
 from bs4 import BeautifulSoup
 import requests
 import sys
+import os
 import random
 
 # local modules
@@ -20,8 +21,15 @@ if len(sys.argv) > 1:
         raise ValueError("Invalid board name argument; valid names are "
             "day/week/month")
 else:
-    raise TypeError("Missing required board name argument; valid names are "
-        "day/week/month")
+    if os.environ['board_name']:
+        if os.environ['board_name'] in helpers.name_associations.keys():
+            board_name = os.environ['board_name']
+        else:
+            raise ValueError("Invalid board name argument; valid names are "
+                "day/week/month")
+    else:
+        raise TypeError("Missing required board name argument; valid names are "
+            "day/week/month")
 
 # list of servers to retrieve data from
 servers = ['origin', 'pi', 'sphere', 'radius', 'centra']
