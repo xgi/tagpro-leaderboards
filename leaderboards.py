@@ -39,7 +39,7 @@ reddit = praw.Reddit(client_id=secret.client_id,
                      client_secret=secret.client_secret,
                      username=secret.reddit_username,
                      password=secret.reddit_password,
-                     user_agent="TagPro Leaderboards Mini https://github.com/xgi/tagpro-leaderboards-mini")
+                     user_agent="TagPro Leaderboards https://github.com/xgi/tagpro-leaderboards")
 subreddit = reddit.subreddit('tagpro')
 
 ## get the main boards page with links to profiles

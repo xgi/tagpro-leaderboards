@@ -1,7 +1,7 @@
-TagPro Leaderboards Mini
+TagPro Leaderboards
 ===
 
-TagPro Leaderboards Mini is a script for retrieving leaderboard statistics from the online game TagPro, and posting those stats to the TagPro subreddit. It is intended to be run as a cronjob. This project is a derivative of, and deprecates, [TagPro Leaderboards](https://github.com/xgi/tagpro-leaderboards).
+TagPro Leaderboards is a script for retrieving leaderboard statistics from the online game TagPro, and posting those stats to the TagPro subreddit. It is intended to be run as a cronjob, or scheduled on a service such as [AWS Lambda](https://aws.amazon.com/lambda/).
 
 Configuration
 ---
