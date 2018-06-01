@@ -96,8 +96,9 @@ profiles.sort(
 )
 
 ## build reddit post
-post_text = """\#|Name|Points|Time|Win%|G|W|L|Pup%|Save%|Tags|Popped|Grabs|Caps|Hold|Prevent|Returns|Support|DCs
--|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|"""
+post_text = \
+"""|\#|Name|Points|Time|Win%|G|W|L|Pup%|Save%|Tags|Popped|Grabs|Caps|Hold|Prevent|Returns|Support|DCs|
+:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|"""
 
 rank = 1
 
@@ -115,7 +116,7 @@ for profile in profiles:
         if rank <= 3:
             name = "**%s**" % name
 
-    post_text += "\n%d|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|" % (
+    post_text += "\n|%d|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|" % (
         rank,
         name,
         profile.data['Points'][board_name],
