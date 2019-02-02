@@ -34,6 +34,8 @@ def rotate(array):
     return array[1:] + array[:1]
 
 def request(servers, directory):
+    time.sleep(1)
+
     max_request_attempts = len(servers) * 2
     request_attempts = 0
 

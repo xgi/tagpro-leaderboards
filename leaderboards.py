@@ -32,7 +32,7 @@ else:
             "day/week/month")
 
 # list of servers to retrieve data from
-servers = ['origin', 'pi', 'sphere', 'radius', 'centra']
+servers = ['test']
 
 # create reddit object for submitting board
 reddit = praw.Reddit(client_id=secret.client_id,
