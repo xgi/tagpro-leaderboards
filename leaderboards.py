@@ -62,7 +62,7 @@ profile_links = [row.find('a') for row in rows[1:]]
 ## retrieve individual profile information
 profiles = []
 
-for link in profile_links:
+for link in profile_links[::-1]:
     # retrieve and sanitize profile name
     name = link.text.strip()
     name = name.replace('|','&#124;')
