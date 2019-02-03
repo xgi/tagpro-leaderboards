@@ -12,6 +12,8 @@ import secret
 import helpers
 from profile import Profile
 
+# base tagpro server url
+BASE_URL = "http://tagpro-test.koalabeast.com"
 
 # validate board name argument
 if len(sys.argv) > 1:
@@ -19,20 +21,17 @@ if len(sys.argv) > 1:
         board_name = sys.argv[1]
     else:
         raise ValueError("Invalid board name argument; valid names are "
-            "day/week/month")
+                         "day/week/month")
 else:
     if os.environ['board_name']:
         if os.environ['board_name'] in helpers.name_associations.keys():
             board_name = os.environ['board_name']
         else:
             raise ValueError("Invalid board name argument; valid names are "
-                "day/week/month")
+                             "day/week/month")
     else:
         raise TypeError("Missing required board name argument; valid names are "
-            "day/week/month")
-
-# list of servers to retrieve data from
-servers = ['test']
+                        "day/week/month")
 
 # create reddit object for submitting board
 reddit = praw.Reddit(client_id=secret.client_id,
@@ -42,10 +41,8 @@ reddit = praw.Reddit(client_id=secret.client_id,
                      user_agent="TagPro Leaderboards https://github.com/xgi/tagpro-leaderboards")
 subreddit = reddit.subreddit('tagpro')
 
-## get the main boards page with links to profiles
-# request boards page and rotate the server list
-response = helpers.request(servers, '/boards')
-servers = helpers.rotate(servers)
+# get the main boards page with links to profiles
+response = requests.get("%s/boards" % BASE_URL)
 
 soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -56,48 +53,43 @@ container_div = soup.find('div', attrs={
 table = container_div.find('table')
 rows = table.find_all('tr')
 
-# create list of profile links by extracting the a element of each row
-profile_links = [row.find('a') for row in rows[1:]]
+profile_ids = []
+profile_points = {}
+for row in rows[1:]:
+    profile_id = row.find('a').attrs['href'].split('/profile/')[1]
+    profile_ids.append(profile_id)
+    profile_points[profile_id] = int(row.find_all('td')[-1].text.strip())
 
-## retrieve individual profile information
+response = requests.get("%s/profiles/%s" % (BASE_URL, ",".join(profile_ids)))
+data = response.json()
+
 profiles = []
-
-for link in profile_links[::-1]:
-    # retrieve and sanitize profile name
-    name = link.text.strip()
-    name = name.replace('|','&#124;')
-
+for player_data in data:
     # create profile obj
-    profile = Profile(link.attrs['href'], name)
+    player_id = player_data['_id']
+    reserved_name = player_data['reservedName']
+    profile = Profile(
+        reserved_name.replace('|', '&#124;') if reserved_name is not None
+        else "*[unreserved]*",
+        player_id,
+        profile_points[player_id]
+    )
 
-    # request profile page and rotate the server list
-    response = helpers.request(servers, profile.url)
-    servers = helpers.rotate(servers)
-
-    soup = BeautifulSoup(response.text, "html.parser")
-
-    # extract data table
-    container_div = soup.find('div', attrs={
-        'id': 'all-stats'
-    })
-    table = container_div.find('table')
-
-    # parse table data into profile obj
-    profile.read_table(table)
+    # parse data into profile obj
+    profile.parse_data(player_data)
 
     # add profile obj to list
     profiles.append(profile)
 
-# re-sort profiles by points because they may have changed in the time it took
-# to download all profiles
+# sort profiles by points
 profiles.sort(
-    key=lambda profile: int(profile.data['Points'][board_name]),
+    key=lambda profile: int(profile.points),
     reverse=True
 )
 
-## build reddit post
+# build reddit post
 post_text = \
-"""|\#|Name|Points|Time|Win%|G|W|L|Pup%|Save%|Tags|Popped|Grabs|Caps|Hold|Prevent|Returns|Support|DCs|
+    """|\#|Name|Points|Time|Win%|G|W|L|Pup%|Save%|Tags|Popped|Grabs|Caps|Hold|Prevent|Returns|Support|DCs|
 :-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|"""
 
 rank = 1
@@ -107,9 +99,9 @@ for profile in profiles:
 
     # add link to profile for top 10 players
     if rank <= 10:
-        name = "[%s](http://tagpro-radius.koalabeast.com%s)" % (
+        name = "[%s](http://tagpro-test.koalabeast.com/profile/%s)" % (
             profile.name,
-            profile.url
+            profile.id
         )
 
         # make name bold for top 3 players (winners)
@@ -119,7 +111,7 @@ for profile in profiles:
     post_text += "\n|%d|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|" % (
         rank,
         name,
-        profile.data['Points'][board_name],
+        profile.points,
         profile.data['Time Played'][board_name],
         profile.data['Win %'][board_name],
         profile.data['Games'][board_name],
