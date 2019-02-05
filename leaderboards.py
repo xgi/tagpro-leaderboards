@@ -88,9 +88,8 @@ profiles.sort(
 )
 
 # build reddit post
-post_text = \
-    """|\#|Name|Points|Time|Win%|G|W|L|Pup%|Save%|Tags|Popped|Grabs|Caps|Hold|Prevent|Returns|Support|DCs|
-:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|"""
+post_text = "|\#|Name|Points|Time|Win%|G|W|L|Pup%|Save%|Tags|Popped|Grabs|Caps|Hold|Prevent|Returns|Support|DCs|\n" +\
+            "|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|"""
 
 rank = 1
 
