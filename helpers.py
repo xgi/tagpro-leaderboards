@@ -36,4 +36,4 @@ def time_str(seconds):
     # https://stackoverflow.com/a/8907407
     hours, remainder = divmod(int(seconds), 60 * 60)
     minutes, seconds = divmod(remainder, 60)
-    return "%d:%d:%d" % (hours, minutes, seconds)
+    return "%02d:%02d:%02d" % (hours, minutes, seconds)
