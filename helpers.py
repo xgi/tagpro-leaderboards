@@ -33,4 +33,7 @@ def submission_title(board_name):
 
 
 def time_str(seconds):
-    return time.strftime('%H:%M:%S', time.gmtime(int(seconds)))
+    # https://stackoverflow.com/a/8907407
+    hours, remainder = divmod(int(seconds), 60 * 60)
+    minutes, seconds = divmod(remainder, 60)
+    return "%d:%d:%d" % (hours, minutes, seconds)
