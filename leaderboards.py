@@ -6,6 +6,11 @@ import requests
 import sys
 import os
 import random
+import boto3
+from boto3.dynamodb.conditions import Key, Attr
+from botocore.exceptions import ClientError
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 # local modules
 import secret
@@ -131,4 +136,37 @@ for profile in profiles:
 
     rank += 1
 
-subreddit.submit(helpers.submission_title(board_name), post_text)
+cur_date = datetime.utcnow().date()
+dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
+table = dynamodb.Table('tagpro-leaderboards')
+
+if board_name == "day":
+    # save to database
+    response = table.put_item(Item={
+        'text': post_text,
+        'timestamp': cur_date.isoformat()
+    })
+elif board_name == "week":
+    # create post with weekly info, then create comments for days
+    submission = subreddit.submit(
+        helpers.submission_title(cur_date, board_name), post_text)
+    for i in range(7):
+        date = cur_date - relativedelta(days=i)
+        try:
+            response = table.get_item(Key={
+                'timestamp': date.isoformat()
+            })
+        except ClientError as e:
+            print(e.response['Error']['Message'])
+        else:
+            if 'Item' in response:
+                item = response['Item']
+                text = item['text']
+                text = "**%s**\n\n%s" % (
+                    helpers.submission_title(date, "day"),
+                    text
+                )
+                submission.reply(text)
+elif board_name == "month":
+    # create post with monthly info
+    subreddit.submit(helpers.submission_title(cur_date, board_name), post_text)
