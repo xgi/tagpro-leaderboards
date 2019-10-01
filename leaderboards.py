@@ -137,8 +137,8 @@ for profile in profiles:
     rank += 1
 
 cur_date = datetime.utcnow().date()
-dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
-table = dynamodb.Table('tagpro-leaderboards')
+dynamodb = boto3.resource('dynamodb', region_name=secret.dynamodb_region)
+table = dynamodb.Table(secret.dynamodb_name)
 
 if board_name == "day":
     # save to database
