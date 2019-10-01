@@ -14,7 +14,7 @@ def submission_title(board_name):
     cur_time = datetime.utcnow()
 
     if board_name == "day":
-        date_string = cur_time.strftime('%B %d, %Y')
+        date_string = cur_time.strftime('%A, %B %d, %Y')
     elif board_name == "week":
         date_string = cur_time.strftime('%B %d, %Y')
     elif board_name == "month":
