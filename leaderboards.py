@@ -140,13 +140,14 @@ cur_date = datetime.utcnow().date()
 dynamodb = boto3.resource('dynamodb', region_name=secret.dynamodb_region)
 table = dynamodb.Table(secret.dynamodb_name)
 
-if board_name == "day":
-    # save to database
-    response = table.put_item(Item={
-        'text': post_text,
-        'timestamp': cur_date.isoformat()
-    })
-elif board_name == "week":
+# regardless of the type of board, we save it in the database
+response = table.put_item(Item={
+    'text': post_text,
+    'timestamp': cur_date.isoformat(),
+    'type': board_name
+})
+
+if board_name == "week":
     # create post with weekly info, then create comments for days
     submission = subreddit.submit(
         helpers.submission_title(cur_date, board_name), post_text)
@@ -154,7 +155,8 @@ elif board_name == "week":
         date = cur_date - relativedelta(days=i)
         try:
             response = table.get_item(Key={
-                'timestamp': date.isoformat()
+                'timestamp': date.isoformat(),
+                'type': 'day'
             })
         except ClientError as e:
             print(e.response['Error']['Message'])
