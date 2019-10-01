@@ -10,17 +10,15 @@ name_associations = {
 }
 
 
-def submission_title(board_name):
-    cur_time = datetime.utcnow()
-
+def submission_title(date, board_name):
     if board_name == "day":
-        date_string = cur_time.strftime('%A, %B %d, %Y')
+        date_string = date.strftime('%A, %B %d, %Y')
     elif board_name == "week":
-        date_string = cur_time.strftime('%B %d, %Y')
+        date_string = date.strftime('%B %d, %Y')
     elif board_name == "month":
         # monthly boards are reset during the 1st, so we need the name of the
         # previous month
-        prev_time = cur_time - relativedelta(months=1)
+        prev_time = date - relativedelta(months=1)
         date_string = prev_time.strftime('%B %Y')
     else:
         raise ValueError("Invalid board name argument; valid names are "
