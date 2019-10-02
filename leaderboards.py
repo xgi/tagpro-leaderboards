@@ -147,7 +147,13 @@ response = table.put_item(Item={
     'type': board_name
 })
 
-if board_name == "week":
+if board_name == "day":
+    # create locked post on our user page
+    user_page = reddit.subreddit('u_%s' % secret.reddit_username)
+    submission = user_page.submit(
+        helpers.submission_title(cur_date, board_name), post_text)
+    submission.mod.lock()
+elif board_name == "week":
     # create post with weekly info, then create comments for days
     submission = subreddit.submit(
         helpers.submission_title(cur_date, board_name), post_text)
