@@ -140,13 +140,7 @@ cur_date = datetime.utcnow().date()
 dynamodb = boto3.resource('dynamodb', region_name=secret.dynamodb_region)
 table = dynamodb.Table(secret.dynamodb_name)
 
-# regardless of the type of board, we save it in the database
-response = table.put_item(Item={
-    'text': post_text,
-    'timestamp': cur_date.isoformat(),
-    'type': board_name
-})
-
+submission = None
 if board_name == "day":
     # create locked post on our user page
     user_page = reddit.subreddit('u_%s' % secret.reddit_username)
@@ -157,6 +151,7 @@ elif board_name == "week":
     # create post with weekly info, then create comments for days
     submission = subreddit.submit(
         helpers.submission_title(cur_date, board_name), post_text)
+    reply = ""
     for i in range(7):
         date = cur_date - relativedelta(days=i)
         try:
@@ -169,12 +164,19 @@ elif board_name == "week":
         else:
             if 'Item' in response:
                 item = response['Item']
-                text = item['text']
-                text = "**%s**\n\n%s" % (
+                reply += "[%s](%s)\n\n" % (
                     helpers.submission_title(date, "day"),
-                    text
+                    item['url']
                 )
-                submission.reply(text)
+    submission.reply(reply)
 elif board_name == "month":
     # create post with monthly info
     subreddit.submit(helpers.submission_title(cur_date, board_name), post_text)
+
+# regardless of the type of board, we save it in the database
+if submission:
+    response = table.put_item(Item={
+        'url': submission.url,
+        'timestamp': cur_date.isoformat(),
+        'type': board_name
+    })
